@@ -13,6 +13,7 @@ PORT_NAME = 'COM8'
 DMAX = 4000
 IMIN = 0
 IMAX = 50
+lidar = RPLidar(PORT_NAME)
 
 def update_line(num, iterator, line):
     scan = next(iterator)
@@ -23,19 +24,19 @@ def update_line(num, iterator, line):
     return line,
 
 def run():
-    lidar = RPLidar(PORT_NAME)
+    for measurment in lidar.iter_measurments():
+        if (measurment[2] > 80 and measurment[2] < 100):  # in angular range
+            print(measurment[3])
     fig = plt.figure()
     ax = plt.subplot(111, projection='polar')
     line = ax.scatter([0, 0], [0, 0], s=5, c=[IMIN, IMAX],
-                           cmap=plt.cm.Greys_r, lw=0)
+                        cmap=plt.cm.Greys_r, lw=0)
     ax.set_rmax(DMAX)
     ax.grid(True)
 
     iterator = lidar.iter_scans()
+    
 
-    # for measurment in lidar.iter_measurments():
-    #     if (measurment[2] > 0 and measurment[2] < 10):  # in angular range
-    #         print(measurment[3])
 
     ani = animation.FuncAnimation(fig, update_line,
         fargs=(iterator, line), interval=50)
