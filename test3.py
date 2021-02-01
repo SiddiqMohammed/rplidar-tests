@@ -9,16 +9,16 @@ PORT_NAME = 'COM8'  # COM port used by the lidar
 stop = False
 templist = []
 
-touchpoint = 200
-tp_tolerance = 20
+# in mm
+touchpoint = 600 
+tp_tolerance = 50
 
 def scan(lidar):
     global stop
     while True:
         counter = 0
         print('Recording measurements... Press Crl+C to stop.')
-        data = 0
-        range_sum = 0
+
         for measurment in lidar.iter_measurments():
             if stop == True:
                 lidar.stop()
@@ -26,14 +26,17 @@ def scan(lidar):
                 lidar.disconnect()
                 break
 
+            # t
             if (measurment[2] > 89 and measurment[2] < 100) :  # in angular range
                 templist.append(measurment[3])
+                
             else:
                 if len(templist) != 0:
                     avg_val = average(templist)
 
                     if avg_val < touchpoint + tp_tolerance and avg_val > touchpoint - tp_tolerance:
-                        print(avg_val)
+                        # print(avg_val)
+                        print(measurment[2])
                     templist.clear()
 
 def average(lst):
