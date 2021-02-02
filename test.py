@@ -10,11 +10,16 @@ stop = False
 templist = []
 
 # in mm
-tp_dist = 240 
-tp_dist_tolerance = 50
-tp_angle = 90 
-tp_angle_tolerance = 5
+# tp_dist = 240 
+tp_dist_tolerance = 30
+# tp_angle = 90 
+tp_angle_tolerance = 1
 
+# tp_dist_array = [240, 340]
+# tp_angle_array = [90, 70]
+
+json_data = [[340, 70], [240, 90]]
+# json_data = [ [360, 70]]
 
 def scan(lidar):
     global stop
@@ -29,18 +34,26 @@ def scan(lidar):
                 lidar.disconnect()
                 break
 
-            # t
-            if (measurment[2] > tp_angle - tp_angle_tolerance and measurment[2] < tp_angle + tp_angle_tolerance) :  # in angular range
-                templist.append(measurment[3])
-                
-            else:
-                if len(templist) != 0:
-                    avg_val = average(templist)
+            for tp in range(0, len(json_data)):
+                # print(tp)
+                # print(json_data[tp][0])
 
-                    if avg_val < tp_dist + tp_dist_tolerance and avg_val > tp_dist - tp_dist_tolerance:
-                        print(avg_val)
-                        # print(measurment[3])
-                    templist.clear()
+                tp_dist = json_data[tp][0]
+                tp_angle = json_data[tp][1]
+                
+            
+                if (measurment[2] > tp_angle - tp_angle_tolerance and measurment[2] < tp_angle + tp_angle_tolerance) :  # in angular range
+                    templist.append(measurment[3])
+                    
+                else:
+                    if len(templist) != 0:
+                        avg_val = average(templist)
+
+                        if avg_val < tp_dist + tp_dist_tolerance and avg_val > tp_dist - tp_dist_tolerance:
+                            # print(avg_val)
+                            print(f"Clicked {tp}")
+                            print(json_data[tp][0], json_data[tp][1])
+                        templist.clear()
 
 def average(lst):
     return sum(lst) / len(lst) 
