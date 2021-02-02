@@ -10,10 +10,10 @@ stop = False
 templist = []
 
 # in mm
-tp_dist = 240 
+tp_dist = 600
 tp_dist_tolerance = 50
-tp_angle = 90 
-tp_angle_tolerance = 5
+tp_angle = 70
+tp_angle_tolerance = 1
 
 
 def scan(lidar):
@@ -30,15 +30,17 @@ def scan(lidar):
                 break
 
             # t
-            if (measurment[2] > tp_angle - tp_angle_tolerance and measurment[2] < tp_angle + tp_angle_tolerance) :  # in angular range
+            # in angular range
+            if (measurment[2] > tp_angle - tp_angle_tolerance and measurment[2] < tp_angle + tp_angle_tolerance):
                 templist.append(measurment[3])
-                
+
             else:
                 if len(templist) != 0:
                     avg_val = average(templist)
-
-                    if avg_val < tp_dist + tp_dist_tolerance and avg_val > tp_dist - tp_dist_tolerance:
-                        print(avg_val)
+                    print(avg_val)
+                    
+                    # if avg_val < tp_dist + tp_dist_tolerance and avg_val > tp_dist - tp_dist_tolerance:
+                    #     print(avg_val)
                         # print(measurment[3])
                     templist.clear()
 

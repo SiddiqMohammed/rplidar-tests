@@ -1,18 +1,27 @@
+import sys
 import time
 from rplidar import RPLidar
+import math
+
 
 PORT_NAME = 'COM8'  # COM port used by the lidar
 
 stop = False
 templist = []
 
-touchpoint = 200
-tp_tolerance = 20
+# in mm
+tp_dist = 600 
+tp_dist_tolerance = 50
+tp_angle = 90 
+tp_angle_tolerance = 10
+
 
 def scan(lidar):
     global stop
     while True:
+        counter = 0
         print('Recording measurements... Press Crl+C to stop.')
+
         for measurment in lidar.iter_measurments():
             if stop == True:
                 lidar.stop()
@@ -20,14 +29,17 @@ def scan(lidar):
                 lidar.disconnect()
                 break
 
-            if (measurment[2] > 89 and measurment[2] < 100) :  # in angular range
+            # t
+            if (measurment[2] > tp_angle - tp_angle_tolerance and measurment[2] < tp_angle + tp_angle_tolerance) :  # in angular range
                 templist.append(measurment[3])
+                
             else:
                 if len(templist) != 0:
                     avg_val = average(templist)
 
-                    if avg_val < touchpoint + tp_tolerance and avg_val > touchpoint - tp_tolerance:
+                    if avg_val < tp_dist + tp_dist_tolerance and avg_val > tp_dist - tp_dist_tolerance:
                         print(avg_val)
+                        # print(measurment[3])
                     templist.clear()
 
 def average(lst):
