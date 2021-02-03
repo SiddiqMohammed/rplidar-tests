@@ -1,25 +1,29 @@
-import sys
 import time
 from rplidar import RPLidar
-import math
-
 
 PORT_NAME = 'COM8'  # COM port used by the lidar
 
 stop = False
-templist = []
 
 # in mm
-tp_dist = 600 
-tp_dist_tolerance = 50
-tp_angle = 90 
-tp_angle_tolerance = 10
+tp_dist = [360, 240]
+tp_angle = [270, 90]
 
+tp_dist_tolerance = 50
+tp_angle_tolerance = 5
+
+# number of times the value has to be repeated to be registered as precise
+dist_precision = 1
+
+# lists to read data from specific angle and run average and filter functions on it
+angles_list_0 = []
+angles_list_1 = []
 
 def scan(lidar):
     global stop
+    filtered_val = [0, 0]
+
     while True:
-        counter = 0
         print('Recording measurements... Press Crl+C to stop.')
 
         for measurment in lidar.iter_measurments():
@@ -29,21 +33,35 @@ def scan(lidar):
                 lidar.disconnect()
                 break
 
-            # t
-            if (measurment[2] > tp_angle - tp_angle_tolerance and measurment[2] < tp_angle + tp_angle_tolerance) :  # in angular range
-                templist.append(measurment[3])
-                
-            else:
-                if len(templist) != 0:
-                    avg_val = average(templist)
+            # Check if the angle is 70
+            if (measurment[2] > tp_angle[0] - tp_angle_tolerance and measurment[2] < tp_angle[0] + tp_angle_tolerance):  # in angular range
+                angles_list_0.append(measurment[3])
 
-                    if avg_val < tp_dist + tp_dist_tolerance and avg_val > tp_dist - tp_dist_tolerance:
-                        print(avg_val)
-                        # print(measurment[3])
-                    templist.clear()
+                if len(angles_list_0) > dist_precision:
+                    avg_val = average(angles_list_0)
+                    filtered_val[0] = (0.8 * filtered_val[0]) + (0.2 * avg_val)
+
+                    if filtered_val[0] < tp_dist[0] + tp_dist_tolerance and filtered_val[0] > tp_dist[0] - tp_dist_tolerance:
+                        # print(avg_val)
+                        print(f"Clicked 0 at {filtered_val[0]}mm at 270deg")
+                    angles_list_0.clear()
+
+            # check if the angle is 90
+            if (measurment[2] > tp_angle[1] - tp_angle_tolerance and measurment[2] < tp_angle[1] + tp_angle_tolerance):  # in angular range
+                angles_list_1.append(measurment[3])
+
+                if len(angles_list_1) > dist_precision:
+                    avg_val = average(angles_list_1)
+                    filtered_val[1] = (0.8 * filtered_val[1]) + (0.2 * avg_val)
+
+                    if filtered_val[1] < tp_dist[1] + tp_dist_tolerance and filtered_val[1] > tp_dist[1] - tp_dist_tolerance:
+                        # print(avg_val)
+                        print(f"Clicked 1 at {filtered_val[1]}mm at 90deg")
+                    angles_list_1.clear()
+
 
 def average(lst):
-    return sum(lst) / len(lst) 
+    return sum(lst) / len(lst)
 
 
 def run():

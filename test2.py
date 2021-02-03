@@ -12,10 +12,10 @@ angles_list_1 = []
 
 # in mm
 tp_dist = [360, 240]
-tp_dist_tolerance = 50
+tp_dist_tolerance = 20
 dist_precision = 1  # number of times the value has to be repeated to be registered as precise
 
-tp_angle = [270, 90]
+tp_angle = [260, 300]
 tp_angle_tolerance = 5
 
 # tp_dist_array = [240, 340]

@@ -11,9 +11,9 @@ templist = []
 
 # in mm
 # tp_dist = 240 
-tp_dist_tolerance = 5
+tp_dist_tolerance = 30
 # tp_angle = 90 
-tp_angle_tolerance = 5
+tp_angle_tolerance = 1
 
 # tp_dist_array = [240, 340]
 # tp_angle_array = [90, 70]
