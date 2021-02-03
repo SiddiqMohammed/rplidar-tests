@@ -10,19 +10,16 @@ stop = False
 angles_list_0 = []
 angles_list_1 = []
 
-# in mm
+# distances of each touchpoint (in mm)
 tp_dist = [360, 240]
-tp_dist_tolerance = 20
+tp_angle = [260, 300]
+
 dist_precision = 1  # number of times the value has to be repeated to be registered as precise
 
-tp_angle = [260, 300]
+# tolerances for the distance gives
+tp_dist_tolerance = 20
 tp_angle_tolerance = 5
 
-# tp_dist_array = [240, 340]
-# tp_angle_array = [90, 70]
-
-json_data = [[340, 70], [240, 90]]
-# json_data = [ [360, 70]]
 
 def scan(lidar):
     global stop
