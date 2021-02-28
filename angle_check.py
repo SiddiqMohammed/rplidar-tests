@@ -12,7 +12,7 @@ templist = []
 # in mm
 tp_dist = 600
 tp_dist_tolerance = 50
-angles_to_test = [70, 90]
+angles_to_test = [ 0]
 tp_angle = 70
 tp_angle_tolerance = 5
 
